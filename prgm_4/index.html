@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>XML Validation</title>
+    <script src="https://unpkg.com/xmllint/xmllint.js"></script>
+</head>
+<body>
+
+    <h2>XML Validation using XSD</h2>
+
+    <button onclick="validate()">Validate XML</button>
+    <pre id="result"></pre>
+
+    <script>
+        function validate() {
+
+            const xml = `
+                <student>
+                    <name>Agin</name>
+                    <age>21</age>
+                </student>
+            `;
+
+            const xsd = `
+                <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+                    <xs:element name="student">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="name" type="xs:string"/>
+                                <xs:element name="age" type="xs:integer"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:schema>
+            `;
+
+            const result = xmllint.validateXML({
+                xml: xml,
+                schema: xsd
+            });
+
+            document.getElementById("result").textContent =
+                result.errors ? result.errors.join("\n") : "XML is valid!";
+        }
+    </script>
+
+</body>
+</html>

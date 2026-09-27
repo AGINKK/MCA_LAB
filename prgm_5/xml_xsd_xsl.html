@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>XML + XSD + XSL Demo</title>
+  <script src="https://unpkg.com/xmllint/xmllint.js"></script>
+</head>
+<body>
+  <h2>Students Data Validation & Transformation</h2>
+  <button onclick="validateAndTransform()">Run Demo</button>
+  <pre id="validation"></pre>
+  <div id="output"></div>
+
+  <script>
+    const xml = `
+      <students>
+        <student>
+          <rollno>101</rollno>
+          <name>John</name>
+        </student>
+        <student>
+          <rollno>102</rollno>
+          <name>Mary</name>
+        </student>
+      </students>
+    `;
+
+    const xsd = `
+      <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+        <xsd:element name="students">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="student" maxOccurs="unbounded">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="rollno" type="xsd:integer"/>
+                    <xsd:element name="name" type="xsd:string"/>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:schema>
+    `;
+
+    const xsl = `
+      <xsl:stylesheet version="1.0"
+        xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+        <xsl:template match="/">
+          <html>
+            <body>
+              <table border="1">
+                <tr><th>Roll No</th><th>Name</th></tr>
+                <xsl:for-each select="students/student">
+                  <tr>
+                    <td><xsl:value-of select="rollno"/></td>
+                    <td><xsl:value-of select="name"/></td>
+                  </tr>
+                </xsl:for-each>
+              </table>
+            </body>
+          </html>
+        </xsl:template>
+      </xsl:stylesheet>
+    `;
+
+    function validateAndTransform() {
+      const result = xmllint.validateXML({ xml, schema: xsd });
+      const validationOutput = document.getElementById("validation");
+      validationOutput.textContent = result.errors ? result.errors.join("\n") : "XML is valid!";
+
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(xml, "text/xml");
+      const xslDoc = parser.parseFromString(xsl, "text/xml");
+
+      const xsltProcessor = new XSLTProcessor();
+      xsltProcessor.importStylesheet(xslDoc);
+      const fragment = xsltProcessor.transformToFragment(xmlDoc, document);
+
+      document.getElementById("output").innerHTML = "";
+      document.getElementById("output").appendChild(fragment);
+    }
+  </script>
+</body>
+</html>

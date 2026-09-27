@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Geolocation using Canvas</title>
+</head>
+<body>
+    <h2>My Location</h2>
+    <button onclick="getLocation()">Show Location</button>
+    <p id="result"></p>
+        <canvas id="myCanvas" width="500" height="300"
+            style="border:1px solid black;">
+        </canvas>
+<script>
+    let canvas = document.getElementById("myCanvas");
+    let ctx = canvas.getContext("2d");
+    function getLocation() {
+        navigator.geolocation.getCurrentPosition(showLocation);
+    }
+    function showLocation(position) {
+        let lat = position.coords.latitude;
+        let lon = position.coords.longitude;
+        document.getElementById("result").innerHTML =
+            "Latitude: " + lat +
+            "<br>Longitude: " + lon;
+            ctx.moveTo(20,260);
+            ctx.lineTo(480,260);
+            ctx.stroke();
+            // Draw y-axis
+            ctx.moveTo(20,260);
+            ctx.lineTo(20,20);
+            ctx.stroke();
+            //Draw the point for the location
+            ctx.beginPath();
+            ctx.arc(250,150,8,0,2*Math.PI);
+            ctx.fillStyle = "red";
+            ctx.fill();
+            ctx.fillStyle = "black";
+            ctx.fillText("My Location",270,150);
+    }
+</script>
+</body>
+</html>

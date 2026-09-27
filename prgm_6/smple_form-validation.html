@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form Validation</title>
+</head>
+<body>
+    <h2>Form Validation and Event Handling</h2>
+
+    <form id="myForm">
+        <label>Name:</label>
+        <input type="text" id="name">
+        <br><br>
+        <label>Email:</label>
+        <input type="text" id="email">
+        <br><br>
+        <input type="submit" value="Submit">
+    </form>
+
+    <script>
+        document.getElementById("myForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            let name = document.getElementById("name").value.trim();
+            let email = document.getElementById("email").value.trim();
+
+            let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (name === "") {
+                alert("Please enter your name");
+            }
+            else if (email === "") {
+                alert("Please enter your email");
+            }
+            else if (!emailPattern.test(email)) {
+                alert("Please enter a valid email");
+            }
+            else {
+                alert("Form submitted successfully!");
+            }
+
+        });
+    </script>
+
+</body>
+</html>
+

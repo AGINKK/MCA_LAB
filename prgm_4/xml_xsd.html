@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>XML Validation Demo</title>
+  <script src="https://unpkg.com/xmllint/xmllint.js"></script>
+</head>
+<body>
+  <h2>Validate XML against XSD</h2>
+  <button onclick="validate()">Validate</button>
+  <pre id="result"></pre>
+
+  <script>
+    function validate() {
+      // Example XML
+      const xml = `
+        <company>
+          <employee id="101">
+            <name>John Doe</name>
+            <department>IT</department>
+            <designation>Software Engineer</designation>
+            <salary>60000</salary>
+          </employee>
+        </company>
+      `;
+
+      // Example XSD
+      const xsd = `
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+          <xs:element name="company">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="employee" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="name" type="xs:string"/>
+                      <xs:element name="department" type="xs:string"/>
+                      <xs:element name="designation" type="xs:string"/>
+                      <xs:element name="salary" type="xs:decimal"/>
+                    </xs:sequence>
+                    <xs:attribute name="id" type="xs:integer" use="required"/>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:schema>
+      `;
+      // Validate using xmllint.js
+      const result = xmllint.validateXML({ xml, schema: xsd });
+      document.getElementById("result").textContent =
+        result.errors ? result.errors.join("\n") : "XML is valid!";
+    }
+  </script>
+</body>
+</html>
